@@ -35,7 +35,7 @@ class ParseProducts(Parser):
     def create_requests(self):
         for id_page in range(1, self.max_page + 1):
             self.r_url = str(self.get_url) + str(id_page)
-            self.pages.append(requests.get(str(self.get_url) + str(id_page)))
+            self.pages.append(requests.get(str(self.get_url)))  # str(id_page))
             self.status_request = requests.get(self.r_url)
 
     def get_status_request(self):
@@ -44,7 +44,7 @@ class ParseProducts(Parser):
         else:
             status_request = self.status_request.status_code
         for id_page in range(1, self.max_page + 1):
-            print(str(self.get_url) + str(id_page), '\n * Status Request:', str(status_request))
+            print(str(self.get_url), '\n * Status Request:', str(status_request))
 
     def get_data(self):
         for r in self.pages:
@@ -52,9 +52,9 @@ class ParseProducts(Parser):
             text_404 = 'None'
             title_text, price_text = text_404, text_404
 
-            for el in html.select('li.product'):
-                title = el.select('.woocommerce-loop-product__title')
-                price = el.select('.price')
+            for el in html.select('.catalog-section-item'):
+                title = el.select('.catalog-section-item-name-wrapper')
+                price = el.select('div.catalog-section-item-price-discount span')
 
                 title_text = title[0].text if title else text_404
                 price_text = price[0].text if price else text_404
@@ -66,7 +66,7 @@ class ParseProducts(Parser):
 # my_site.create_requests()
 # my_site.get_status_request()
 
-my_site_products_data = ParseProducts('http://absolute-nature-products.develop-web.site/shop/page/', 2)
+my_site_products_data = ParseProducts('https://greatsteve.ru/catalog/appleiphone/', 1)
 my_site_products_data.create_requests()
 my_site_products_data.get_status_request()
 my_site_products_data.get_data()
