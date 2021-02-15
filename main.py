@@ -34,7 +34,7 @@ class ParseProducts(Parser):
 
     def create_requests(self):
         for id_page in range(1, self.max_page + 1):
-            self.r_url = str(self.get_url) + str(id_page)
+            self.r_url = str(self.get_url)  # + str(id_page)
             self.pages.append(requests.get(str(self.get_url)))  # str(id_page))
             self.status_request = requests.get(self.r_url)
 
@@ -49,24 +49,22 @@ class ParseProducts(Parser):
     def get_data(self):
         for r in self.pages:
             html = BS(r.content, 'html.parser')
-            text_404 = 'None'
-            title_text, price_text = text_404, text_404
 
-            for el in html.select('.catalog-section-item'):
-                title = el.select('.catalog-section-item-name-wrapper')
-                price = el.select('div.catalog-section-item-price-discount span')
+            for el in html.select('#tab-21 tr'):
+                title = el.select('td:first-child')
+                price = el.select('td:nth-child(3)')
 
-                title_text = title[0].text if title else text_404
-                price_text = price[0].text if price else text_404
+                title_text = title[0].text if title else 404
+                price_text = price[0].text if price else 404
 
-                Parser.write_txt('products.txt', title_text, price_text)
+                Parser.write_txt('iphone.txt', title_text, price_text)
 
 
 # my_site = Parser('http://absolute-nature-products.develop-web.site')
 # my_site.create_requests()
 # my_site.get_status_request()
 
-my_site_products_data = ParseProducts('https://greatsteve.ru/catalog/appleiphone/', 1)
+my_site_products_data = ParseProducts('http://flagman-centre.ru/services/remont-ipad/', 1)
 my_site_products_data.create_requests()
 my_site_products_data.get_status_request()
 my_site_products_data.get_data()
