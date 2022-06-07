@@ -1,7 +1,6 @@
 import requests
 from bs4 import BeautifulSoup as BS
 
-
 class Parser:
     def __init__(self, get_url: str):
         self.status_request = None
