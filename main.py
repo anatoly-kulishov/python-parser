@@ -17,10 +17,9 @@ class Parser:
         print(self.get_url, '\n * Status Request:', str(status_request))
 
     @staticmethod
-    def write_txt(name_txt, title, price):
+    def write_txt(name_txt, title):
         file = open(name_txt, 'a', encoding='UTF-8')
         file.write('Title: ' + title + '\n')
-        file.write('Price: ' + price + '\n\n')
         file.close()
 
 
@@ -49,14 +48,12 @@ class ParseProducts(Parser):
         for r in self.pages:
             html = BS(r.content, 'html.parser')
 
-            for el in html.select('#tab-21 tr'):
-                title = el.select('td:first-child')
-                price = el.select('td:nth-child(3)')
+            for el in html.select('#content ul li'):
+                title = el.select('a')
 
                 title_text = title[0].text if title else 404
-                price_text = price[0].text if price else 404
 
-                Parser.write_txt('iphone.txt', title_text, price_text)
+                Parser.write_txt('parsed_data.txt', title_text)
 
 
 # my_site = Parser('http://absolute-nature-products.develop-web.site')
